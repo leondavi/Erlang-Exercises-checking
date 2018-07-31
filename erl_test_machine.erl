@@ -24,13 +24,14 @@ compile_files(FilesList,ListOfStudents)-> SeekID = string:find(hd(FilesList),?EX
 		_ ->
 			IDTmp = tl(string:find(hd(FilesList),"_",leading)),
 			ID = hd(lists:filter(fun(X) -> X /= [] end,string:replace(IDTmp,string:find(IDTmp,"."),""))),
-			case compile:file(hd(FilesList),[strong_validation,return_warnings]) of
-				{ok,ModuleName,[]}-> compile_files(tl(FilesList),
+			io:format("~p~n", [compile:file(hd(FilesList),[return_warnings])]),
+			case compile:file(hd(FilesList),[return_warnings]) of
+				{ok,ModuleName}-> compile_files(tl(FilesList),
 					ListOfStudents++[#student{id=ID,module_name=ModuleName,grade=?FULL_GRADE,compile_status=compilation_passed}]);%compilation failed;
 				{ok,ModuleName,_Warning}-> compile_files(tl(FilesList),
 					ListOfStudents++[#student{id=ID,module_name=ModuleName,grade=?FULL_GRADE-?DECREASING_ON_WARNING,compile_status=compilation_passed,warning=warning_failed}]);%compilation failed;
 				error -> compile_files(tl(FilesList),
-					ListOfStudents++[#student{id=ID,module_name=hd(FilesList),grade=?FAILING_GRADE,compile_status=compilation_failed}])
+					ListOfStudents++[#student{id=ID,module_name=hd(FilesList),grade=?FAILING_GRADE,compile_status=compilation_failed,warning=warning_failed}])
 			end
 	end.
 
