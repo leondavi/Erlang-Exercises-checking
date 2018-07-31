@@ -99,3 +99,20 @@ test_block(X)->[
 	[try X:union([1,2,3,4],[5,6,7,3]) =:= [1,2,3,4,5,6,7] of Res->Res catch _:_->failed end]
 ].
 
+%for complex programs which may stack, after 100ms skip to next check
+%Warning this is an unsafe method of try catch after, This implementation is recommended for tests only. 
+running_envelope(Fun)->
+Parent = self(),
+    {Pid, Ref} = spawn_monitor(fun() -> Parent ! {ok, Fun()} end),
+    receive
+        {ok, _ExprRes} ->
+            erlang:demonitor(Ref, [flush]),
+            true;
+        {'DOWN', Ref, process, Pid, _Info} ->
+            failed
+        after 100-> 
+        	failed
+    end.
+
+
+%example of using running envelope: [running_envelope(fun()-> ModuleName:FuncX(Input) end)]
