@@ -51,7 +51,7 @@ testing_loop([],UpdatedList) -> UpdatedList;
 testing_loop(ListOfStudents,UpdatedList) -> CurrentRecord = hd(ListOfStudents),
 	case CurrentRecord#student.compile_status of
 		compilation_failed-> testing_loop(tl(ListOfStudents),UpdatedList++[CurrentRecord]);
-		compilation_passed-> Grade = CurrentRecord#student.grade-testing(CurrentRecord#student.module_name),
+		compilation_passed-> Grade = max(CurrentRecord#student.grade-testing(CurrentRecord#student.module_name),?FAILING_GRADE),
 				     NewRecord = CurrentRecord#student{grade=Grade},
 				     testing_loop(tl(ListOfStudents),UpdatedList++[NewRecord])
 	end.
