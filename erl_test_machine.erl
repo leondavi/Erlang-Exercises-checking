@@ -6,8 +6,8 @@
 -define(FULL_GRADE,100).
 -define(DECREASING_ON_WARNING,0).
 -define(DECREASING_POINTS_VAL,3).%how much points to decrease for each mistake
--define(EXCERCISE_STRING,"ex5").
--define(GRADES_FILE_NAME,"grades.txt").
+-define(EXCERCISE_STRING,"ex9").
+-define(GRADES_FILE_NAME,"Grades_Sheet_"++?EXCERCISE_STRING++".txt").
 -record(student, {id,module_name,grade,compile_status,warning=warning_passed}).
 -export([init/0]).
 
@@ -99,8 +99,13 @@ test_block(X)->[
 	[try X:union([1,2,3,4],[5,6,7,3]) =:= [1,2,3,4,5,6,7] of Res->Res catch _:_->failed end]
 ].
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%		Supportin methods
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %for complex programs which may stack, after 100ms skip to next check
 %Warning this is an unsafe method of try catch after, This implementation is recommended for tests only. 
+%example of using running envelope: [running_envelope(fun()-> ModuleName:FuncX(Input) end)]
 running_envelope(Fun)->
 Parent = self(),
     {Pid, Ref} = spawn_monitor(fun() -> Parent ! {ok, Fun()} end),
@@ -115,4 +120,23 @@ Parent = self(),
     end.
 
 
-%example of using running envelope: [running_envelope(fun()-> ModuleName:FuncX(Input) end)]
+%%%%%%%%%%%% files operations %%%%%%%%%%%%%
+compare_two_files(FILENAME_A,FILENAME_B)->
+	ListOfLinesA = readlines(FILENAME_A),
+	ListOfLinesB = readlines(FILENAME_B),
+	lists:sort(ListOfLinesA) =:= lists:sort(ListOfLinesB).
+
+readlines(FileName) ->
+    case file:open(FileName, [read]) of 
+    	{ok, Device} ->
+		    try get_all_lines(Device)
+		      after file:close(Device)
+		    end;
+		    _-> []
+    end.
+
+get_all_lines(Device) ->
+    case io:get_line(Device, "") of
+        eof  -> [];
+        Line -> Line ++ get_all_lines(Device)
+    end.
