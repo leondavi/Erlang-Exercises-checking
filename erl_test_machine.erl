@@ -1,17 +1,18 @@
 
 
--module(erl_test_machine).
+module(new_erltest_ex7).
 -author("David Leon").
 -define(FAILING_GRADE,60).
 -define(FULL_GRADE,100).
 -define(DECREASING_ON_WARNING,0).
--define(DECREASING_POINTS_VAL,3).%how much points to decrease for each mistake
+-define(DECREASING_POINTS_VAL,5).%how much points to decrease for each mistake
 -define(EXCERCISE_STRING,"ex9").
 -define(GRADES_FILE_NAME,"Grades_Sheet_"++?EXCERCISE_STRING++".txt").
 -record(student, {id,module_name,grade,compile_status,warning=warning_passed}).
 -export([init/0]).
 
 init()-> 
+	file:delete(?GRADES_FILE_NAME),
 	CurrentDir = element(2,file:get_cwd()),
 	FilesList = filter_by_erl_ending(element(2,file:list_dir(CurrentDir)),[]),
 	ListOfStudents = compile_files(FilesList,[]),
