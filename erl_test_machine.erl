@@ -1,6 +1,6 @@
 
 
-module(new_erltest_ex7).
+module(erl_test_machine).
 -author("David Leon").
 -define(FAILING_GRADE,60).
 -define(FULL_GRADE,100).
