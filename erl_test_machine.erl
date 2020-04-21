@@ -104,7 +104,7 @@ test_block(X)->[
 %		Supportin methods
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%for complex programs which may stack, after 100ms skip to next check
+%for complex programs which might stuck, after 100ms skip to next check
 %Warning this is an unsafe method of try catch after, This implementation is recommended for tests only. 
 %example of using running envelope: [running_envelope(fun()-> ModuleName:FuncX(Input) end)]
 running_envelope(Fun)->
