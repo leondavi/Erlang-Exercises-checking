@@ -66,38 +66,6 @@ testing(ModuleName) -> ListOfTests = test_block(ModuleName),
 %write here list of tests protected by try and catch
 test_block(X)->[
 	[try X:findKelem([],1) =:= notFound of Res->Res catch _:_->failed end ],
-	[try X:findKelem([1,2,5,7],5) =:= notFound of Res->Res catch _:_->failed end],
-	[try X:findKelem([4],1) =:= 4  of Res->Res catch _:_->failed end],
-	[try X:findKelem([1,2,7,5,8,6],3) =:= 7 of Res->Res catch _:_->failed end],
-	[try X:findKelem([{1,a},{2,b},{3,c},{4,d}],2) =:= {2,b}  of Res->Res catch _:_->failed end],
-
-	[try X:reverse([]) =:= [] of Res->Res catch _:_->failed end],
-	[try X:reverse([{b,4}]) =:= [{b,4}] of Res->Res catch _:_->failed end],
-	[try X:reverse([4,5]) =:= [5,4]of Res->Res catch _:_->failed end],
-	[try X:reverse([1,a,2,b,c,3,e]) =:= [e,3,c,b,2,a,1]of Res->Res catch _:_->failed end],
-	[try X:reverse([1,1,1,1]) =:= [1,1,1,1]of Res->Res catch _:_->failed end],
-	[try X:reverse([{1,a},{2,b},{3,c},{4,d},2,[5,3],r]) =:= [r,[5,3],2,{4,d},{3,c},{2,b},{1,a}] of Res->Res catch _:_->failed end],
-
-	[try X:deleteKelem([1,2.0,{a,4.0}],{a,4}) =:= [1,2.0,{a,4.0}] of Res->Res catch _:_->failed end],
-	[try X:deleteKelem([],3) =:= [] of Res->Res catch _:_->failed end],
-	[try X:deleteKelem([1,2,3,4,3,4],3) =:= [1,2,4,4] of Res->Res catch _:_->failed end],
-	[try X:deleteKelem([{a,1},{b,2},[1,2,3],{c,3},{d,4},b,a,[1,2,3],{a,1},[1,2,3]],[1,2,3]) =:= [{a,1},{b,2},{c,3},{d,4},b,a,{a,1}] of Res->Res catch _:_->failed end],
-	[try X:deleteKelem([{a,1},{b,2},[1,2,3],{c,3},{d,4},b,a,[1,2,3],{a,1},[1,2,3]],2) =:= [{a,1},{b,2},[1,2,3],{c,3},{d,4},b,a,[1,2,3],{a,1},[1,2,3]] of Res->Res catch _:_->failed end],
-	[try X:deleteKelem([1,1,1,1,1],1) =:= [] of Res->Res catch _:_->failed end],
-	
-	[try X:addKelem([1,2],1,4) =:= [4,1,2] of Res->Res catch _:_->failed end],
-	[try X:addKelem([],1,8) =:= [8] of Res->Res catch _:_->failed end],
-	[try X:addKelem([3,4],3,5) =:= [3,4,5] of Res->Res catch _:_->failed end],
-	[try X:addKelem([{a,2},{b,4},c,d,[1,2,3]],4,[1,{a,4},3]) =:= [{a,2},{b,4},c,[1,{a,4},3],d,[1,2,3]] of Res->Res catch _:_->failed end],
-	[try X:addKelem([1,2,3,4,5],2,{a,8}) =:= [1,{a,8},2,3,4,5] of Res->Res catch _:_->failed end],
-	[try X:addKelem([1,2,3],4,[]) =:= [1,2,3,[]] of Res->Res catch _:_->failed end],
-
-	[try X:union([],[{a,1},{b,2},[4,5,6]]) =:= [{a,1},{b,2},[4,5,6]] of Res->Res catch _:_->failed end],
-	[try X:union([],[]) =:= [] of Res->Res catch _:_->failed end],
-	[try X:union([{a,1},{b,2},[4,5,6]],[]) =:= [{a,1},{b,2},[4,5,6]] of Res->Res catch _:_->failed end],
-	[try X:union([{a,1},{q,2},{a,b,c},[8,10,12]],[{a,1},{q,2},{a,b,c},[8,10,12]]) =:= [{a,1},{q,2},{a,b,c},[8,10,12]] of Res->Res catch _:_->failed end],
-	[try X:union([[1,2,3,4,5],[1,2,3,4,5]],[{m,4},[]]) =:= [[1,2,3,4,5],{m,4},[]] of Res->Res catch _:_->failed end],
-	[try X:union([1,{a},{b},[f,2]],[3,a,1.0,{b}]) =:= [1,{a},{b},[f,2],3,a,1.0] of Res->Res catch _:_->failed end],
 	[try X:union([1,2,3,4],[5,6,7,3]) =:= [1,2,3,4,5,6,7] of Res->Res catch _:_->failed end]
 ].
 
