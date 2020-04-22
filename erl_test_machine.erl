@@ -7,7 +7,7 @@
 -define(DECREASING_ON_WARNING,0).
 -define(DECREASING_POINTS_VAL,5).%how much points to decrease for each mistake
 -define(EXCERCISE_STRING,"ex9").
--define(GRADES_FILE_NAME,"Grades_Sheet_"++?EXCERCISE_STRING++".txt").
+-define(GRADES_FILE_NAME,"Grades_Sheet_"++?EXCERCISE_STRING++".csv").
 -record(student, {id,module_name,grade,compile_status,warning=warning_passed}).
 -export([init/0]).
 
@@ -17,7 +17,7 @@ init()->
 	FilesList = filter_by_erl_ending(element(2,file:list_dir(CurrentDir)),[]),
 	ListOfStudents = compile_files(FilesList,[]),
 	ListOfStudentsWithGrades = testing_loop(ListOfStudents,[]),
-	print_results_to_text_file(ListOfStudentsWithGrades).
+	print_results_to_csv_file(ListOfStudentsWithGrades).
 
 compile_files([],ListOfStudents)-> ListOfStudents; 
 compile_files(FilesList,ListOfStudents)-> SeekID = string:find(hd(FilesList),?EXCERCISE_STRING++"_",leading),
@@ -36,10 +36,10 @@ compile_files(FilesList,ListOfStudents)-> SeekID = string:find(hd(FilesList),?EX
 		end
 	end.
 
-print_results_to_text_file([])->done;
-print_results_to_text_file(ListOfStudents)-> Student=hd(ListOfStudents),
-	file:write_file(?GRADES_FILE_NAME,io_lib:fwrite("~s    |   ~p    |    ~p     |    ~p    ~n",[Student#student.id,Student#student.grade,Student#student.compile_status,Student#student.warning]),[append]),
-	print_results_to_text_file(tl(ListOfStudents)).
+print_results_to_csv_file([])->done;
+print_results_to_csv_file(ListOfStudents)-> Student=hd(ListOfStudents),
+	file:write_file(?GRADES_FILE_NAME,io_lib:fwrite("~s,~p,~p,~p,~n",[Student#student.id,Student#student.grade,Student#student.compile_status,Student#student.warning]),[append]),
+	print_results_to_csv_file(tl(ListOfStudents)).
 
 %filtering file names, keeping .erl files
 filter_by_erl_ending([],NewList)-> NewList;
@@ -51,8 +51,9 @@ filter_by_erl_ending(List,NewList)-> case string:find(hd(List),".erl",trailing) 
 testing_loop([],UpdatedList) -> UpdatedList;
 testing_loop(ListOfStudents,UpdatedList) -> CurrentRecord = hd(ListOfStudents),
 	case CurrentRecord#student.compile_status of
-		compilation_failed-> testing_loop(tl(ListOfStudents),UpdatedList++[CurrentRecord]);
-		compilation_passed-> Grade = max(CurrentRecord#student.grade-testing(CurrentRecord#student.module_name),?FAILING_GRADE),
+		compilation_failed-> testing_loop(tl(ListOfStudents),UpdatedList++[CurrentRecord]),io:format("Student: ~s failed ~n",[CurrentRecord#student.module_name]);
+		compilation_passed-> io:format("Testin Student: ~s ~n",[CurrentRecord#student.module_name]),
+				     Grade = max(CurrentRecord#student.grade-testing(CurrentRecord#student.module_name),?FAILING_GRADE),
 				     NewRecord = CurrentRecord#student{grade=Grade},
 				     testing_loop(tl(ListOfStudents),UpdatedList++[NewRecord])
 	end.
